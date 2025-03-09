@@ -8,6 +8,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import MapScreen from "./src/tabs/map-screen";
+import SearchScreen from "./src/tabs/search-screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -32,7 +33,7 @@ function App(): React.JSX.Element {
             position: 'absolute',
             bottom: 30,
             marginHorizontal: 20,
-            borderRadius: 24,
+            borderRadius: 10,
             borderTopColor: 'transparent',
           },
           headerShown: false,
@@ -43,6 +44,13 @@ function App(): React.JSX.Element {
         <Tab.Screen 
           name='Map'
           component={MapScreen}
+          options={{
+            tabBarIcon: () => (null)
+          }}
+        />
+        <Tab.Screen 
+          name='Search'
+          component={SearchScreen}
           options={{
             tabBarIcon: () => (null)
           }}
