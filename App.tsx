@@ -5,11 +5,11 @@
  * @format
  */
 
-import React from 'react';
-import {
-  Text,
-  View,
-} from 'react-native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import MapScreen from "./src/tabs/map-screen";
+
+const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
   /*
@@ -23,11 +23,32 @@ function App(): React.JSX.Element {
    */
 
   return (
-    <View>
-      <Text>
-        test
-      </Text>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarStyle: {
+            backgroundColor: '#1F1F1F',
+            height: 74,
+            position: 'absolute',
+            bottom: 30,
+            marginHorizontal: 20,
+            borderRadius: 24,
+            borderTopColor: 'transparent',
+          },
+          headerShown: false,
+          tabBarActiveTintColor: 'white',
+          tabBarInactiveTintColor: 'gray',
+        }}
+      >
+        <Tab.Screen 
+          name='Map'
+          component={MapScreen}
+          options={{
+            tabBarIcon: () => (null)
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
