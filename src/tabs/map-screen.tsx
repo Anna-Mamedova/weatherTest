@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker , MapEvent} from 'react-native-maps';
 import axios from 'axios';
+import { MapNavigation, MarkerType, WeatherType } from '../types/types';
 
 const OPENWEATHER_API_KEY = '98dc9516d2cb8fe245b1b135cfa17cfe';
 
-export default function MapScreen({ navigation }) {
-  const [marker, setMarker] = useState(null);
-  const [weather, setWeather] = useState(null);
-  const [city, setCity] = useState('');
-  const [showWeather, setShowWeather] = useState(false);
+export default function MapScreen({ navigation }: { navigation: MapNavigation }) {
+  const [marker, setMarker] = useState<MarkerType | null>(null);
+  const [weather, setWeather] = useState<WeatherType | null>(null);
+  const [city, setCity] = useState<string>('');
+  const [country, setCountry] = useState<string>('');
+  const [showWeather, setShowWeather] = useState<boolean>(false);
 
-  const fetchWeather = async (latitude, longitude) => {
+  const fetchWeather = async (latitude: number, longitude: number) => {
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${OPENWEATHER_API_KEY}`
       );
-      setWeather(response.data);
-      setCity(response.data.name)
+
+      const { main, weather, name, sys } = response.data;
+
+      const weatherData: WeatherType = {
+        temp: main.temp,
+        description: weather[0].description,
+        name: name,
+        country: sys.country,
+      };
+
+      setWeather(weatherData);
+      setCity(weatherData.name);
+      setCountry(weatherData.country);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch weather data');
     }
   };
 
-  const handleLongPress = (event) => {
+  const handleLongPress = (event: MapEvent) => {
     setShowWeather(false)
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setMarker({ latitude, longitude });
@@ -51,11 +64,10 @@ export default function MapScreen({ navigation }) {
         <TouchableOpacity
           style={styles.weatherBox}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Search', { routCity: city })}
+          onPress={() => navigation.navigate('Search', { routCity: city, routCountry: country })}
         >
-          <Text style={styles.weatherText}>{weather.name}</Text>
-          <Text style={styles.weatherText}>{Math.round(weather.main.temp)}°C</Text>
-          <Text style={styles.weatherText}>{weather.weather[0].description}</Text>
+          <Text style={styles.weatherText}>{weather?.name}, {weather?.country}</Text>
+          <Text style={styles.weatherText}>{Math.round(weather?.temp ?? 0)}°C, {weather?.description}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -70,17 +82,24 @@ const styles = StyleSheet.create({
     bottom: 120,
     left: 20,
     right: 20,
-    backgroundColor: '#1F1F1Fbf',
+    backgroundColor: '#097969BF',
     padding: 10,
     borderRadius: 10,
     alignItems: 'center',
   },
-  weatherText: { fontSize: 16, fontWeight: 'bold', color: 'white' },
+  weatherText: {
+    fontSize: 16,
+    fontWeight: 700,
+    color: 'white',
+    paddingVertical: 3,
+  },
   title: {
     position: 'absolute',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: 900,
     top: 30,
     alignSelf: 'center',
+    textTransform: 'uppercase',
+    color: '#FF3131',
   }
 });

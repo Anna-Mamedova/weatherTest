@@ -28,8 +28,8 @@ function App(): React.JSX.Element {
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {
-            backgroundColor: '#1F1F1F',
-            height: 74,
+            backgroundColor: '#097969',
+            height: 70,
             position: 'absolute',
             bottom: 30,
             marginHorizontal: 20,
@@ -37,8 +37,9 @@ function App(): React.JSX.Element {
             borderTopColor: 'transparent',
           },
           headerShown: false,
-          tabBarActiveTintColor: 'white',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: '#FFF',
+          tabBarInactiveTintColor: '#40B5ADBF',
+          tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold', marginTop: -7 }, 
         }}
       >
         <Tab.Screen 
